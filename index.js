@@ -625,6 +625,12 @@ function step_vis() {
         return;
     } else if (c==="U") {
         let data=prompt("STDIN");
+        if (data==undefined) {
+            error=true;
+            finished=true;
+            console.log("Simulated STDIN closed");
+            return;
+        }
         state.stacks[state.stacks.length-1].push({type:"string",data:data});
         if (STDOUT.children.length==0) {
             let elem=document.createElement("li");
