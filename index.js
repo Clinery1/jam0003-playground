@@ -715,10 +715,39 @@ function step_vis() {
         }
         color_cell();
     } else if (c==="@") {
-        alert("TODO: Int RNG");
+        let max=state.stacks[state.stacks.length-1].pop();
+        let min=state.stacks[state.stacks.length-1].pop();
+        if (max.type!=="int"||min.type!=="int") {
+            error=true;
+            alert("Error: expected stack[0] and stack[1] to be ints at "+String(state.cursors[state.cursors.length-1]));
+            running=false;
+            return;
+        }
+        let max2=max.data;
+        let min2=min.data;
+        if (max2<0n) {
+            max2*=-1n;
+        }
+        if (min2<0n) {
+            min2*=-1n;
+        }
+        let range=Number(max2+min2);
+        let random=BigInt(Math.trunc(Math.random()*range));
+        random+=min.data;
+        state.stacks[state.stacks.length-1].push({type:"int",data:random});
         color_cell();
     } else if (c==="&") {
-        alert("TODO: Float RNG");
+        let max=state.stacks[state.stacks.length-1].pop();
+        let min=state.stacks[state.stacks.length-1].pop();
+        if (max.type!=="float"||min.type!=="float") {
+            error=true;
+            alert("Error: expected stack[0] and stack[1] to be floats at "+String(state.cursors[state.cursors.length-1]));
+            running=false;
+            return;
+        }
+        let range=Math.abs(max.data)+Math.abs(min.data);
+        let random=(Math.random()*range)+min.data;
+        state.stacks[state.stacks.length-1].push({type:"float",data:random});
         color_cell();
     } else if (c==="[") {
         let item=state.stacks[state.stacks.length-1].pop();
