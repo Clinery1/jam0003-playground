@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html><head>
+    <title>Fuzzlebut web visualizer</title>
+    <link rel="stylesheet" href="index.css">
+</head><body>
+    <h1>Visualizer</h1>
+    <textarea id="raw_source" placeholder="Fuzzlebut code">"Hello world!"#~</textarea>
+    <br>
+    <button onclick="convert_source()">Begin execution</button>
+    <hr>
+    <div id="settings">
+        <button id="step_button" onclick="step_vis()">Step</button>
+        <button id="autorun_button" onclick="toggle_interval()">Toggle auto run</button>
+        <span>Autorun speed: </span>
+        <select id="autorun_speed" onchange="update_interval()">
+            <option value="instant">Instant</option>
+            <option value="fastest">Fastest</option>
+            <option value="fast" selected>Fast</option>
+            <option value="normal">Normal</option>
+            <option value="slow">slow</option>
+            <option value="slowest">slowest</option>
+        </select>
+    </div>
+    <h2>Visualized code</h2>
+    <div class="vis_source"><code id="vis_source"></code></div>
+    <h2>Stdout</h2>
+    <ol id="stdout"></ol>
+    <h2>Stack</h2>
+    <ol reversed start="0" id="vis_stack"></ol>
+    <script src="index.js"></script>
+</body></html>
