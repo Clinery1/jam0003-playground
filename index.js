@@ -628,6 +628,7 @@ function step_vis() {
         if (data==undefined) {
             error=true;
             finished=true;
+            running=false;
             console.log("Simulated STDIN closed");
             return;
         }
