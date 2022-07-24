@@ -1,1 +1,1 @@
-You probably want to be [here](https://clinery1.github.io/jam0003-playground/) instead. However, if you want to look at hte code, then good luck. The code is almost 900 lines of surprisingly working garbage.
+You probably want to be [here](https://clinery1.github.io/jam0003-playground/) instead. However, if you want to look at the code, then good luck. The code is almost 900 lines of surprisingly working garbage.
