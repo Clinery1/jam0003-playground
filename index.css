@@ -2,19 +2,17 @@ html body {
     padding:0;
     margin:1em;
     margin-top:2em;
+}
+a, textarea, button, select, html body {
     background-color:#000;
     color:#fff;
 }
 textarea {
-    background-color:#000;
-    color:#fff;
     border-width:0.15em;
     border-radius:0.5em;
     border-color:#fafafa;
 }
 button {
-    background-color:#000;
-    color:#fff;
     border-width:0.15em;
     border-radius:0.5em;
     border-color:#fafafa;
@@ -28,8 +26,6 @@ button:hover {
     border-color:#fafafa;
 }
 select {
-    background-color:#000;
-    color:#fff;
     border-width:0.15em;
     border-radius:0.5em;
     border-color:#fafafa;
