@@ -121,14 +121,14 @@ function check_cell() {
     }
 }
 function current_cell() {
-    let y=state.cursors[state.cursors.length-1].y;
-    let x=state.cursors[state.cursors.length-1].x;
+    const y=state.cursors[state.cursors.length-1].y;
+    const x=state.cursors[state.cursors.length-1].x;
     return source[y][x];
 }
 function color_cell() {
-    let y=state.cursors[state.cursors.length-1].y;
-    let x=state.cursors[state.cursors.length-1].x;
-    let node=vis_nodes[y][x];
+    const y=state.cursors[state.cursors.length-1].y;
+    const x=state.cursors[state.cursors.length-1].x;
+    const node=vis_nodes[y][x];
     if (node) {
         node.classList=["active"];
     }
@@ -140,9 +140,9 @@ function format_item(item) {
         return String(item.data);
     } else if (item.type==="list") {
         let output="[";
-        let last_index=item.data.length-1;
+        const last_index=item.data.length-1;
         let i=0;
-        for (let element of item.data) {
+        for (const element of item.data) {
             if (element.type=="string") {
                 output=output+"\""+element.data+"\"";
             } else if (element.type=="char") {
@@ -159,11 +159,11 @@ function format_item(item) {
         return output;
     } else if (item.type==="object") {
         let output="{";
-        let last_index=Object.keys(item.data).length-1;
+        const last_index=Object.keys(item.data).length-1;
         let i=0;
-        for (let field_name in item.data) {
+        for (const field_name in item.data) {
             output=output+field_name+":";
-            let field=item.data[field_name];
+            const field=item.data[field_name];
             if (field.type=="string") {
                 output=output+"\""+field.data+"\"";
             } else if (field.type=="char") {
@@ -191,7 +191,7 @@ function format_item(item) {
 function follow_wire() {
     while (true) {
         if (error||finished) {return}
-        let c=current_cell();
+        const c=current_cell();
         if (c==='^') {
             state.directions[state.directions.length-1]="up";
             color_cell();
@@ -229,13 +229,13 @@ function follow_wire() {
 }
 function follow_function(name,arg_count) {
     state.directions[state.directions.length-1]="right";
-    let tl={
+    const tl={
         x:state.cursors[state.cursors.length-1].x+1,
         y:state.cursors[state.cursors.length-1].y+1,
     };
     while (true) {  // top border
         next_cell();
-        let c=current_cell();
+        const c=current_cell();
         if (c==="|") {
             break;
         }
@@ -243,20 +243,20 @@ function follow_function(name,arg_count) {
     }
     state.directions[state.directions.length-1]="down";
     while (true) {  // right border
-        let c=current_cell();
+        const c=current_cell();
         if (c==="-") {
             break;
         }
         color_cell();
         next_cell();
     }
-    let br={
+    const br={
         x:state.cursors[state.cursors.length-1].x,
         y:state.cursors[state.cursors.length-1].y,
     };
     state.directions[state.directions.length-1]="left";
     while (true) {  // bottom border
-        let c=current_cell();
+        const c=current_cell();
         if (c==="|") {
             break;
         }
@@ -265,7 +265,7 @@ function follow_function(name,arg_count) {
     }
     state.directions[state.directions.length-1]="up";
     while (true) {  // left border
-        let c=current_cell();
+        const c=current_cell();
         if (c==="P") {
             break;
         }
@@ -287,23 +287,23 @@ function update_stack() {
         VIS_STACK.children[0].remove();
     }
     for (let i=state.stacks[state.stacks.length-1].length-1;i>=0;i-=1) {
-        let elem=document.createElement("li");
+        const elem=document.createElement("li");
         elem.innerHTML=format_item(state.stacks[state.stacks.length-1][i]);
         VIS_STACK.appendChild(elem);
     }
 }
 function print(string) {
     if (STDOUT.children.length>0) {
-        let elem=STDOUT.children[STDOUT.children.length-1];
+        const elem=STDOUT.children[STDOUT.children.length-1];
         elem.innerHTML+=string;
     } else {
-        let elem=document.createElement("li");
+        const elem=document.createElement("li");
         elem.innerHTML=string;
         STDOUT.appendChild(elem);
     }
 }
 function newline() {
-    let elem=document.createElement("li");
+    const elem=document.createElement("li");
     STDOUT.appendChild(elem);
 }
 function step_vis() {
@@ -374,11 +374,11 @@ function step_vis() {
             state.stacks[state.stacks.length-1].push({type:"int",data:BigInt(num_str)});
         }
     } else if (c==="A") {
-        let left=state.stacks[state.stacks.length-1].pop();
-        let right=state.stacks[state.stacks.length-1].pop();
+        const left=state.stacks[state.stacks.length-1].pop();
+        const right=state.stacks[state.stacks.length-1].pop();
         if ((left.type==="int"&&right.type==="int")||(left.type==="float"&&right.type==="float")) {
-            left.data=left.data+right.data;
-            state.stacks[state.stacks.length-1].push(left);
+            const res=left.data+right.data;
+            state.stacks[state.stacks.length-1].push({type:left.type,data:res});
         } else if (left.type==="bool"&&right.type==="bool") {
             left.data=left.data||right.data;
             state.stacks[state.stacks.length-1].push(left);
@@ -394,11 +394,11 @@ function step_vis() {
         }
         color_cell();
     } else if (c==="S") {
-        let left=state.stacks[state.stacks.length-1].pop();
-        let right=state.stacks[state.stacks.length-1].pop();
+        const left=state.stacks[state.stacks.length-1].pop();
+        const right=state.stacks[state.stacks.length-1].pop();
         if ((left.type==="int"&&right.type==="int")||(left.type==="float"&&right.type==="float")) {
-            left.data-=right.data;
-            state.stacks[state.stacks.length-1].push(left);
+            const res=left.data-right.data;
+            state.stacks[state.stacks.length-1].push({type:left.type,data:res});
         } else if (left.type==="object"&&right.type==="string") {
             left.data[right.data]=undefined;
             state.stacks[state.stacks.length-1].push(left);
@@ -418,11 +418,11 @@ function step_vis() {
         }
         color_cell();
     } else if (c==="M") {
-        let left=state.stacks[state.stacks.length-1].pop();
-        let right=state.stacks[state.stacks.length-1].pop();
+        const left=state.stacks[state.stacks.length-1].pop();
+        const right=state.stacks[state.stacks.length-1].pop();
         if ((left.type==="int"&&right.type==="int")||(left.type==="float"&&right.type==="float")) {
-            left.data*=right.data;
-            state.stacks[state.stacks.length-1].push(left);
+            const res=left.data*right.data;
+            state.stacks[state.stacks.length-1].push({type:left.type,data:res});
         } else if (left.type==="bool"&&right.type==="bool") {
             left.data=left.data&&right.data;
             state.stacks[state.stacks.length-1].push(left);
@@ -432,12 +432,12 @@ function step_vis() {
         }
         color_cell();
     } else if (c==="D") {
-        let left=state.stacks[state.stacks.length-1].pop();
-        let right=state.stacks[state.stacks.length-1].pop();
+        const left=state.stacks[state.stacks.length-1].pop();
+        const right=state.stacks[state.stacks.length-1].pop();
         if ((left.type==="int"&&right.type==="int")||(left.type==="float"&&right.type==="float")) {
-            let rem=left.data%right.data;
-            left.data/=right.data;
-            state.stacks[state.stacks.length-1].push(left);
+            const rem=left.data%right.data;
+            const res=left.data/right.data;
+            state.stacks[state.stacks.length-1].push({type:left.type,data:res});
             state.stacks[state.stacks.length-1].push({type:left.type,data:rem});
         } else {
             error=true;
@@ -448,9 +448,9 @@ function step_vis() {
         state.stacks[state.stacks.length-1].push({type:"object",data:{}});
         color_cell();
     } else if (c==="F") {
-        let object=state.stacks[state.stacks.length-1].pop();
-        let name=state.stacks[state.stacks.length-1].pop();
-        let data=state.stacks[state.stacks.length-1].pop();
+        const object=state.stacks[state.stacks.length-1].pop();
+        const name=state.stacks[state.stacks.length-1].pop();
+        const data=state.stacks[state.stacks.length-1].pop();
         if (name.type!=="string") {
             error=true;
             alert("Error: attempt to set a field with name that is not a string at "+String(state.cursors[state.cursors.length-1]));
@@ -469,7 +469,7 @@ function step_vis() {
     } else if (c==="^"||c==="v"||c==="<"||c===">"||c==="|"||c==="-"||c==="+") {
         follow_wire();
     } else if (c==="N") {
-        let item=state.stacks[state.stacks.length-1].pop();
+        const item=state.stacks[state.stacks.length-1].pop();
         if (item.type==="int") {
             item.data*=-1n;
         } else if (item.type==="float") {
@@ -483,7 +483,7 @@ function step_vis() {
         state.stacks[state.stacks.length-1].pop();
         color_cell();
     } else if (c==="C") {
-        let item=state.stacks[state.stacks.length-1].pop();
+        const item=state.stacks[state.stacks.length-1].pop();
         if (item.type==="int") {
             item.type="float";
             item.data=Number(item.data);
@@ -494,10 +494,10 @@ function step_vis() {
         state.stacks[state.stacks.length-1].push(item);
         color_cell();
     } else if (c==="!") {
-        let stack=state.stacks[state.stacks.length-1];
-        let item=stack[stack.length-1];
-        let formatted=format_item(item);
-        let lines=formatted.split("\n");
+        const stack=state.stacks[state.stacks.length-1];
+        const item=stack[stack.length-1];
+        const formatted=format_item(item);
+        const lines=formatted.split("\n");
         print(lines[0]);
         if (lines.length>1) {
             for (let i=1;i<lines.length;i+=1) {
@@ -507,10 +507,10 @@ function step_vis() {
         }
         color_cell();
     } else if (c==="#") {
-        let stack=state.stacks[state.stacks.length-1];
-        let item=stack[stack.length-1];
-        let formatted=format_item(item);
-        let lines=formatted.split("\n");
+        const stack=state.stacks[state.stacks.length-1];
+        const item=stack[stack.length-1];
+        const formatted=format_item(item);
+        const lines=formatted.split("\n");
         print(lines[0]);
         if (lines.length>1) {
             for (let i=1;i<lines.length;i+=1) {
@@ -521,8 +521,8 @@ function step_vis() {
         newline();
         color_cell();
     } else if (c==="P") {
-        let name=state.stacks[state.stacks.length-1].pop();
-        let arg_count=state.stacks[state.stacks.length-1].pop();
+        const name=state.stacks[state.stacks.length-1].pop();
+        const arg_count=state.stacks[state.stacks.length-1].pop();
         if (name.type!=="string") {
             error=true;
             alert("Error: stack[0] was not a String "+String(state.cursors[state.cursors.length-1]));
@@ -538,8 +538,8 @@ function step_vis() {
         color_cell();
         follow_function(name.data,arg_count.data);
     } else if (c==="G") {
-        let a=state.stacks[state.stacks.length-1].pop();
-        let b=state.stacks[state.stacks.length-1].pop();
+        const a=state.stacks[state.stacks.length-1].pop();
+        const b=state.stacks[state.stacks.length-1].pop();
         if (a.type==="int"&&b.type==="int") {
             state.stacks[state.stacks.length-1].push({type:"bool",data:a.data>b.data});
         } else if (a.type==="float"&&b.type==="float") {
@@ -549,8 +549,8 @@ function step_vis() {
         }
         color_cell();
     } else if (c==="L") {
-        let a=state.stacks[state.stacks.length-1].pop();
-        let b=state.stacks[state.stacks.length-1].pop();
+        const a=state.stacks[state.stacks.length-1].pop();
+        const b=state.stacks[state.stacks.length-1].pop();
         if (a.type==="int"&&b.type==="int") {
             state.stacks[state.stacks.length-1].push({type:"bool",data:a.data<b.data});
         } else if (a.type==="float"&&b.type==="float") {
@@ -560,8 +560,8 @@ function step_vis() {
         }
         color_cell();
     } else if (c==="E") {
-        let a=state.stacks[state.stacks.length-1].pop();
-        let b=state.stacks[state.stacks.length-1].pop();
+        const a=state.stacks[state.stacks.length-1].pop();
+        const b=state.stacks[state.stacks.length-1].pop();
         if (a.type===b.type) {
             state.stacks[state.stacks.length-1].push({type:"bool",data:a.data===b.data});
         } else {
@@ -577,8 +577,8 @@ function step_vis() {
     } else if (c==="~") {
         color_cell();
         if (state.stacks.length>1) {
-            let prev_stack=state.stacks.pop();
-            let ret_item=prev_stack.pop();
+            const prev_stack=state.stacks.pop();
+            const ret_item=prev_stack.pop();
             if (ret_item!=undefined) {
                 state.stacks[state.stacks.length-1].push(ret_item);
             }
@@ -599,21 +599,21 @@ function step_vis() {
         color_cell();
     } else if (c==="*") {
         color_cell();
-        let name=state.stacks[state.stacks.length-1].pop();
+        const name=state.stacks[state.stacks.length-1].pop();
         if (name.type!=="string") {
             error=true;
             alert("Error: procedure names have to be Strings "+String(state.cursors[state.cursors.length-1]));
             running=false;
             return;
         }
-        let f=state.functions[name.data];
+        const f=state.functions[name.data];
         if (f==undefined) {
             error=true;
             alert("Error: procedure `"+name.data+"` does not exist "+String(state.cursors[state.cursors.length-1]));
             running=false;
             return;
         }
-        let new_stack=[];
+        const new_stack=[];
         for (let i=0;i<f.arg_count;i+=1) {
             new_stack.unshift(state.stacks[state.stacks.length-1].pop());
         }
@@ -624,7 +624,7 @@ function step_vis() {
         running=false;
         return;
     } else if (c==="U") {
-        let data=prompt("STDIN");
+        const data=prompt("STDIN");
         if (data==undefined) {
             error=true;
             finished=true;
@@ -634,24 +634,24 @@ function step_vis() {
         }
         state.stacks[state.stacks.length-1].push({type:"string",data:data});
         if (STDOUT.children.length==0) {
-            let elem=document.createElement("li");
+            const elem=document.createElement("li");
             elem.innerHTML=data;
             STDOUT.appendChild(elem);
         } else {
-            let elem=STDOUT.children[STDOUT.children.length-1];
+            const elem=STDOUT.children[STDOUT.children.length-1];
             elem.innerHTML+=data;
         }
-        let elem=document.createElement("li");
+        const elem=document.createElement("li");
         STDOUT.appendChild(elem);
         color_cell();
     } else if (c==="s") {
-        let a=state.stacks[state.stacks.length-1].pop();
-        let b=state.stacks[state.stacks.length-1].pop();
+        const a=state.stacks[state.stacks.length-1].pop();
+        const b=state.stacks[state.stacks.length-1].pop();
         state.stacks[state.stacks.length-1].push(a);
         state.stacks[state.stacks.length-1].push(b);
         color_cell();
     } else if (c==="d") {
-        let a=state.stacks[state.stacks.length-1].pop();
+        const a=state.stacks[state.stacks.length-1].pop();
         state.stacks[state.stacks.length-1].push(a);
         state.stacks[state.stacks.length-1].push(a);
         color_cell();
@@ -659,13 +659,13 @@ function step_vis() {
         color_cell();
         next_cell();
         color_cell();
-        let c=current_cell();
+        const c=current_cell();
         state.stacks[state.stacks.length-1].push({type:"char",data:c});
     } else if (c===".") {   // string split
-        let string=state.stacks[state.stacks.length-1].pop();
+        const string=state.stacks[state.stacks.length-1].pop();
         if (string.type==="string") {
-            let list=[];
-            for (let char of string.data.split("")) {
+            const list=[];
+            for (const char of string.data.split("")) {
                 list.push({type:"char",data:char});
             }
             state.stacks[state.stacks.length-1].push(string);
@@ -674,21 +674,21 @@ function step_vis() {
             state.stacks[state.stacks.length-1].push(string);
         }
     } else if (c==="p") {
-        let item=state.stacks[state.stacks.length-1].pop();
+        const item=state.stacks[state.stacks.length-1].pop();
         if (item.type==="string") {
-            let char=item.data.substring(item.data.length-1);
+            const char=item.data.substring(item.data.length-1);
             item.data=item.data.substring(0,item.data.length-1);
             state.stacks[state.stacks.length-1].push(item);
             state.stacks[state.stacks.length-1].push(char);
         } else if (item.type==="list") {
-            let elem=item.data.pop();
+            const elem=item.data.pop();
             state.stacks[state.stacks.length-1].push(item);
             state.stacks[state.stacks.length-1].push(elem);
         } else {
             state.stacks[state.stacks.length-1].push(item);
         }
     } else if (c==="B") {
-        let item=state.stacks[state.stacks.length-1].pop();
+        const item=state.stacks[state.stacks.length-1].pop();
         if (item.type==="bool") {
             if (item.data) {
                 turn_ccw();
@@ -700,7 +700,7 @@ function step_vis() {
         }
         color_cell();
     } else if (c==="b") {
-        let item=state.stacks[state.stacks.length-1].pop();
+        const item=state.stacks[state.stacks.length-1].pop();
         if (item.type==="bool") {
             if (item.data) {
                 turn_cw();
@@ -712,7 +712,7 @@ function step_vis() {
         }
         color_cell();
     } else if (c==="l") {
-        let item=state.stacks[state.stacks.length-1].pop();
+        const item=state.stacks[state.stacks.length-1].pop();
         if (item.type==="string"||item.type==="list") {
             state.stacks[state.stacks.length-1].push(item);
             state.stacks[state.stacks.length-1].push({type:"int",data:BigInt(item.data.length)});
@@ -722,8 +722,8 @@ function step_vis() {
         }
         color_cell();
     } else if (c==="@") {
-        let max=state.stacks[state.stacks.length-1].pop();
-        let min=state.stacks[state.stacks.length-1].pop();
+        const max=state.stacks[state.stacks.length-1].pop();
+        const min=state.stacks[state.stacks.length-1].pop();
         if (max.type!=="int"||min.type!=="int") {
             error=true;
             alert("Error: expected stack[0] and stack[1] to be ints at "+String(state.cursors[state.cursors.length-1]));
@@ -738,40 +738,40 @@ function step_vis() {
         if (min2<0n) {
             min2*=-1n;
         }
-        let range=Number(max2+min2);
+        const range=Number(max2+min2);
         let random=BigInt(Math.trunc(Math.random()*range));
         random+=min.data;
         state.stacks[state.stacks.length-1].push({type:"int",data:random});
         color_cell();
     } else if (c==="&") {
-        let max=state.stacks[state.stacks.length-1].pop();
-        let min=state.stacks[state.stacks.length-1].pop();
+        const max=state.stacks[state.stacks.length-1].pop();
+        const min=state.stacks[state.stacks.length-1].pop();
         if (max.type!=="float"||min.type!=="float") {
             error=true;
             alert("Error: expected stack[0] and stack[1] to be floats at "+String(state.cursors[state.cursors.length-1]));
             running=false;
             return;
         }
-        let range=Math.abs(max.data)+Math.abs(min.data);
-        let random=(Math.random()*range)+min.data;
+        const range=Math.abs(max.data)+Math.abs(min.data);
+        const random=(Math.random()*range)+min.data;
         state.stacks[state.stacks.length-1].push({type:"float",data:random});
         color_cell();
     } else if (c==="[") {
-        let item=state.stacks[state.stacks.length-1].pop();
+        const item=state.stacks[state.stacks.length-1].pop();
         if (item.type=="list") {
             item.data.push(item.data.shift());
         }
         state.stacks[state.stacks.length-1].push(item);
         color_cell();
     } else if (c==="]") {
-        let item=state.stacks[state.stacks.length-1].pop();
+        const item=state.stacks[state.stacks.length-1].pop();
         if (item.type=="list") {
             item.data.unshift(item.data.pop());
         }
         state.stacks[state.stacks.length-1].push(item);
         color_cell();
     } else if (c==="$") {
-        let item=state.stacks[state.stacks.length-1].pop();
+        const item=state.stacks[state.stacks.length-1].pop();
         if (item.type==="int") {
             if (item.data>0x10ffff) {
                 error=true;
@@ -779,12 +779,16 @@ function step_vis() {
                 running=false;
                 return;
             }
-            let code_point=String.fromCodePoint(Number(item.data));
-            console.log("Casting `"+String(item.data)+"` to `"+code_point+"`");
+            const code_point=String.fromCodePoint(Number(item.data));
+            console.log("Casting Int `"+String(item.data)+"` to `"+code_point+"`");
             state.stacks[state.stacks.length-1].push({type:"char",data:code_point});
+        } else if (item.type==="char") {
+            const code_point=item.data.charCodeAt(0);
+            console.log("Casting Char `"+item.data+"` to `"+code_point+"`");
+            state.stacks[state.stacks.length-1].push({type:"int",data:BigInt(code_point)});
         } else {
             error=true;
-            alert("Error: attempt to cast "+object.type+" to char at "+String(state.cursors[state.cursors.length-1]));
+            alert("Error: attempt to cast "+item.type+" to char at "+String(state.cursors[state.cursors.length-1]));
             running=false;
             return;
         }
@@ -810,12 +814,12 @@ function convert_source() {
     finished=false;
     error=false;
     let max=0;
-    for (let line of RAW_SOURCE.value.split("\n")) {
-        let source_line=[];
-        let vis_line=[];
-        for (let char of line.split("")) {
+    for (const line of RAW_SOURCE.value.split("\n")) {
+        const source_line=[];
+        const vis_line=[];
+        for (const char of line.split("")) {
             source_line.push(char);
-            let elem=document.createElement("span");
+            const elem=document.createElement("span");
             elem.innerHTML=char;
             VIS_SOURCE.appendChild(elem);
             vis_line.push(elem);
@@ -830,7 +834,7 @@ function convert_source() {
     for (let i=0;i<source.length;i+=1) {
         while (source[i].length<max) {
             source[i].push(' ');
-            let elem=document.createElement("span");
+            const elem=document.createElement("span");
             elem.innerHTML=' ';
             VIS_SOURCE.appendChild(elem);
             vis_nodes.push(elem);
